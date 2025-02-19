@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Línea del Tiempo - Edad Moderna</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f4f4f4;
+        }
+        #timeline {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 20px auto;
+            width: 90%;
+            padding: 20px;
+            border-top: 4px solid #000;
+            border-bottom: 4px solid #000;
+            background: white;
+            position: relative;
+        }
+        .dropzone {
+            width: 120px;
+            height: 60px;
+            border-radius: 8px;
+            border: 2px dashed #000;
+            background: #e3f2fd;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            position: relative;
+        }
+        .dropzone::before {
+            content: attr(data-year);
+            position: absolute;
+            top: -40px;
+            font-size: 16px;
+            font-weight: bold;
+            background: white;
+            padding: 2px 5px;
+            border: 1px solid black;
+            border-radius: 5px;
+        }
+        .event {
+            padding: 10px;
+            margin: 10px;
+            background-color: #ffcc80;
+            cursor: grab;
+            border: 2px solid #000;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+        #events {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #0288d1;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #01579b;
+        }
+        #result {
+            margin-top: 10px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h1>Línea del Tiempo - Edad Moderna</h1>
+    <p>Arrastra los eventos a su lugar correcto en la línea del tiempo.</p>
+    
+    <div id="timeline">
+        <div class="dropzone" data-year="1453"></div>
+        <div class="dropzone" data-year="1492"></div>
+        <div class="dropzone" data-year="1479"></div>
+        <div class="dropzone" data-year="1487"></div>
+        <div class="dropzone" data-year="1498"></div>
+        <div class="dropzone" data-year="1513"></div>
+        <div class="dropzone" data-year="1517"></div>
+        <div class="dropzone" data-year="1521"></div>
+        <div class="dropzone" data-year="1534"></div>
+        <div class="dropzone" data-year="1545"></div>
+    </div>
+    
+    <div id="events">
+        <div class="event" draggable="true" data-year="1453">Caída de Constantinopla</div>
+        <div class="event" draggable="true" data-year="1492">Descubrimiento de América</div>
+        <div class="event" draggable="true" data-year="1479">Tratado de Alcáçovas</div>
+        <div class="event" draggable="true" data-year="1487">Bartolomé Díaz dobla el Cabo de Buena Esperanza</div>
+        <div class="event" draggable="true" data-year="1498">Vasco de Gama llega a la India</div>
+        <div class="event" draggable="true" data-year="1513">Vasco Núñez de Balboa descubre el Océano Pacífico</div>
+        <div class="event" draggable="true" data-year="1517">Inicio de la Reforma Protestante</div>
+        <div class="event" draggable="true" data-year="1521">Excomunión de Martín Lutero</div>
+        <div class="event" draggable="true" data-year="1534">Creación de la Iglesia Anglicana</div>
+        <div class="event" draggable="true" data-year="1545">Inicio del Concilio de Trento</div>
+    </div>
+    
+    <button onclick="checkTimeline()">Comprobar</button>
+    <p id="result"></p>
+    
+    <script>
+        document.querySelectorAll('.event').forEach(event => {
+            event.addEventListener('dragstart', (e) => {
+                e.dataTransfer.setData('text/plain', e.target.dataset.year);
+                e.dataTransfer.setData('text/event-id', e.target.innerText);
+            });
+        });
+
+        document.querySelectorAll('.dropzone').forEach(zone => {
+            zone.addEventListener('dragover', (e) => {
+                e.preventDefault();
+            });
+            
+            zone.addEventListener('drop', (e) => {
+                e.preventDefault();
+                const year = e.dataTransfer.getData('text/plain');
+                const eventText = e.dataTransfer.getData('text/event-id');
+                if (zone.children.length === 0) {
+                    zone.textContent = eventText;
+                    zone.dataset.filled = year;
+                }
+            });
+        });
+
+        function checkTimeline() {
+            let correct = 0;
+            document.querySelectorAll('.dropzone').forEach(zone => {
+                if (zone.dataset.year === zone.dataset.filled) {
+                    correct++;
+                }
+            });
+            document.getElementById('result').textContent = `Has colocado correctamente ${correct} de 10 eventos.`;
+        }
+    </script>
+</body>
+</html>
